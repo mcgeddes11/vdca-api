@@ -1,2 +1,2 @@
 # vdca-api
-API to interact with standalone stats database
+API to interact with standalone VDCA stats database
