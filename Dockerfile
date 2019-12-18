@@ -2,6 +2,8 @@ FROM tiangolo/uwsgi-nginx:python3.7
 
 LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
 
+COPY requirements.txt requirements.txt
+
 RUN pip install -r requirements.txt
 
 # URL under which static (not modified by Python) files will be requested
