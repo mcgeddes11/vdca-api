@@ -1,3 +1,7 @@
 Flask
 SQLAlchemy
 flask-restful
+requests
+lxml
+pandas
+beautifulsoup4

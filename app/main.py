@@ -1,16 +1,11 @@
-import os
+from app.config import VALID_API_KEY, DATABASE_URL
 from flask import Flask, request
 from flask_restful import Resource, Api, abort, reqparse
 from datetime import datetime
-from data.models import *
-from data.database_utils import VdcaDatabase
+from data.models import BattingStats
 
 app = Flask(__name__)
 api = Api(app)
-
-VALID_API_KEY = os.getenv("API_KEY")
-DATABASE_PATH = os.getenv("DATABASE_PATH")
-DATABASE_URL = "sqlite:///{}".format(DATABASE_PATH)
 
 parser = reqparse.RequestParser()
 parser.add_argument('api_key', type=str, default=False, required=True)
