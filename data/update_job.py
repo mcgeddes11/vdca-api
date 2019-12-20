@@ -7,10 +7,12 @@ from app.config import DATABASE_URL, CRICKETSTATZ_CLUB_ID, CRICKETSTATZ_API_URL,
 from sqlalchemy.engine import create_engine
 from data.data_utils import get_html_from_response, get_table_from_html, get_playerid_from_url, \
     get_team_season_grade_combinations, get_teams
+from data.utils import get_logger
 from datetime import datetime
 import requests
-# TODO: implement logging
 import logging
+
+logger = get_logger("vdca-update-job-log")
 
 engine = create_engine(DATABASE_URL)
 db = VdcaDatabase(engine)
@@ -18,10 +20,11 @@ db = VdcaDatabase(engine)
 this_season = datetime.utcnow().year
 
 # FOR TESTING ONLY!
-DROP_AND__RECREATE = True
+DROP_AND__RECREATE = False
 
 #  drop and recreate if necessary
 if DROP_AND__RECREATE:
+    logger.info("Dropping and recreating tables")
     years_to_process = range(2007, this_season+1)
     VdcaBase.metadata.drop_all(engine)
     VdcaBase.metadata.create_all(engine)
@@ -50,17 +53,14 @@ fixtures_list = response.json()
 combos = get_team_season_grade_combinations(years_to_process, fixtures_list)
 
 
-# FOR TESTING ONLY!
-# team_list = [{"Name":"Metchosin Weekend","TeamID":17808,"Club":"Metchosin Cricket Club"}]
-# years_to_process = [2019]
-
 # Need to pull separate stats for finals, regular-season and combined
 # 0 = both
 # 1 = finals only
 # 2 = exclude
 finals_flags = [0,1,2]
 
-# Iterate over years to process, then teams to process
+
+logger.info("Processing batting stats...")
 # WEEKEND BATTING - note we're setting mininns=1 so we don't get records for every player
 base_url = CRICKETSTATZ_API_URL + "linkreport.aspx?mode={}&club={}&playerid=&mininns=1&minruns=&minovers=&team={}&grade={}&pool=&season={}&finals={}"
 for ix, item in combos.iterrows():
@@ -90,7 +90,7 @@ for ix, item in combos.iterrows():
         # Query for each record, create if doesn't exist, update if does
         records = []
         for ix, row in data_table.iterrows():
-            result = db.query_unique_record(BattingStats, player_id=row["player_id"], team_id=row["team_id"], season=row["season"], finals_flag=finals)
+            result = db.query_unique_record(BattingStats, player_id=row["player_id"], team_id=row["team_id"], season=row["season"], finals_flag=finals, grade_id=grade_id)
             # If we get multiple results, that's a problem
             if len(result) > 1:
                 raise Exception("Multiple entries detected")
@@ -107,4 +107,4 @@ for ix, item in combos.iterrows():
         with db.yield_session() as s:
             s.add_all(records)
 
-
+logger.info("Batting stats processed")

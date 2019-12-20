@@ -21,7 +21,7 @@ class VdcaDatabase():
         finally:
             the_session.close()
 
-    def query_unique_record(self, tabletype: VdcaBase, player_id, team_id, season, finals_flag):
+    def query_unique_record(self, tabletype: VdcaBase, player_id, team_id, season, finals_flag, grade_id):
         with self.yield_session() as s:
-            result = s.query(tabletype).filter_by(player_id=player_id, team_id=team_id, season=season, finals_flag=finals_flag).all()
+            result = s.query(tabletype).filter_by(player_id=player_id, team_id=team_id, season=season, finals_flag=finals_flag, grade_id=grade_id).all()
         return result

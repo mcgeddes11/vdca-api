@@ -1,11 +1,15 @@
-import os
+import os, logging
+
 # API key to check requests against
 VALID_API_KEY = os.getenv("API_KEY")
 
 # Local path for our database
 DATABASE_PATH = os.getenv("DATABASE_PATH")
-LOGFILE_PATH = os.getenv("LOGFILE_PATH")
 DATABASE_URL = "sqlite:///{}".format(DATABASE_PATH)
+
+# Logging config
+LOGFILE_PATH = os.getenv("LOGFILE_PATH")
+LOG_LEVEL = logging.INFO
 
 # Club ID as defined in CricketStatz for VDCA
 CRICKETSTATZ_CLUB_ID = 23365
