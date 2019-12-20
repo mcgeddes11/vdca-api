@@ -5,6 +5,8 @@ import re
 
 VdcaBase = declarative_base()
 
+# TODO: add unique constraints and indexes to all tables
+
 class BattingStats(VdcaBase):
 
     __tablename__ = "batting_stats"
@@ -70,7 +72,7 @@ class BowlingStats(VdcaBase):
     team_id = Column(String)
     season = Column(Integer)
     matches = Column(Integer)
-    overs = Column(Float)
+    overs = Column(String)
     maidens = Column(Integer)
     runs_against = Column(Integer)
     five_wicket_innings = Column(Integer)
@@ -85,7 +87,24 @@ class BowlingStats(VdcaBase):
         pass
 
     def map_from_dataframe_row(self,row):
-        pass
+        self.player_id = row["player_id"]
+        self.player_name = row["Name"]
+        self.player_url = row["player_url"]
+        self.team_name = row["Last Team"]
+        self.team_id = row["team_id"]
+        self.season = row["season"]
+        self.matches = int(row["Mts"])
+        self.overs = row["Overs"]
+        self.maidens = int(row["Maids"])
+        self.runs_against = int(row["Runs"])
+        self.five_wicket_innings = int(row["5WI"])
+        self.best_bowling = row["BBI"]
+        self.average = None if row["Average"] == "-" else float(row["Average"])
+        self.economy = None if row["Econ"] == "-" else float(row["Econ"])
+        self.wickets_aggregate = int(row["Wickets"])
+        self.finals_flag = row["finals_flag"]
+        self.grade_id = row["grade_id"]
+
 
 class FieldingStats(VdcaBase):
 

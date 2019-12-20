@@ -1,6 +1,6 @@
 from sqlalchemy.orm import session, sessionmaker
 from contextlib import contextmanager
-from data.models import BattingStats, VdcaBase
+from app.data.models import VdcaBase
 
 class VdcaDatabase():
 

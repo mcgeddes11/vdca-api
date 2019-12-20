@@ -1,8 +1,7 @@
-from app.config import VALID_API_KEY, DATABASE_URL
-from flask import Flask, request
+from app.config import VALID_API_KEY
+from flask import Flask
 from flask_restful import Resource, Api, abort, reqparse
 from datetime import datetime
-from data.models import BattingStats
 
 app = Flask(__name__)
 api = Api(app)
