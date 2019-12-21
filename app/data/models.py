@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from pandas import DataFrame
 import re
+from flask_restful import fields
 
 VdcaBase = declarative_base()
 
@@ -120,6 +121,7 @@ class FieldingStats(VdcaBase):
     matches = Column(Integer)
     catches = Column(Integer)
     runouts = Column(Integer)
+    total_dismissals = Column(Integer)
     strikerate = Column(Float)
     finals_flag = Column(String)
     grade_id = Column(Integer)
@@ -128,4 +130,18 @@ class FieldingStats(VdcaBase):
         pass
 
     def map_from_dataframe_row(self, row):
+        self.player_id = row["player_id"]
+        self.player_name = row["Name"]
+        self.player_url = row["player_url"]
+        self.team_name = row["Last Team"]
+        self.team_id = row["team_id"]
+        self.season = row["season"]
+        self.matches = int(row["Matches"])
+        self.catches = int(row["Catches"])
+        self.runouts = int(row["Run Outs"])
+        self.total_dismissals = self.catches + self.runouts
+        self.strikerate = float(self.total_dismissals) / float(self.matches)
+        self.finals_flag = row["finals_flag"]
+        self.grade_id = row["grade_id"]
+
         pass

@@ -25,3 +25,8 @@ class VdcaDatabase():
         with self.yield_session() as s:
             result = s.query(tabletype).filter_by(player_id=player_id, team_id=team_id, season=season, finals_flag=finals_flag, grade_id=grade_id).all()
         return result
+
+    def query_stats_by_season_finals_grade(self, tabletype: VdcaBase, season, finals_flag, grade_id):
+        with self.yield_session() as s:
+            result = s.query(tabletype).filter_by(season=season, finals_flag=finals_flag, grade_id=grade_id).all()
+        return result
