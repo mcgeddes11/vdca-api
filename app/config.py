@@ -8,7 +8,8 @@ DATABASE_PATH = os.getenv("DATABASE_PATH")
 DATABASE_URL = "sqlite:///{}".format(DATABASE_PATH)
 
 # Logging config
-LOGFILE_PATH = os.getenv("LOGFILE_PATH")
+UPDATE_JOB_LOGFILE_PATH = os.getenv("UPDATE_JOB_LOGFILE_PATH")
+API_LOGFILE_PATH = os.getenv("API_LOGFILE_PATH")
 LOG_LEVEL = logging.INFO
 
 # Club ID as defined in CricketStatz for VDCA

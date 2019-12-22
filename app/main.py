@@ -6,9 +6,10 @@ from app.data.database_utils import VdcaDatabase
 from app.data.database_utils import models_to_json
 from app.data.models import FieldingStats, BowlingStats, BattingStats, VdcaBase
 from sqlalchemy.engine import create_engine
+from app.data.utils import get_logger
 import json
 
-from app.config import LOG_LEVEL, LOGFILE_PATH, DATABASE_URL
+from app.config import API_LOGFILE_PATH, DATABASE_URL
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,13 +17,14 @@ api = Api(app)
 engine = create_engine(DATABASE_URL)
 db = VdcaDatabase(engine)
 
-# TODO: logging - will require a separate logfile path in config/env vars
+# configure api logging
+logger = get_logger("vdca-api-log", API_LOGFILE_PATH)
 
-parser = reqparse.RequestParser()
-parser.add_argument('api_key', type=str, default=False, required=True)
-parser.add_argument('season', type=int, default=False, required=True)
-parser.add_argument('finals_flag', type=int, default=False, required=True)
-parser.add_argument('grade_id', type=int, default=False, required=True)
+stats_arg_parser = reqparse.RequestParser()
+stats_arg_parser.add_argument('api_key', type=str, default=False, required=True)
+stats_arg_parser.add_argument('season', type=int, default=False, required=True)
+stats_arg_parser.add_argument('finals_flag', type=int, default=False, required=True)
+stats_arg_parser.add_argument('grade_id', type=int, default=False, required=True)
 
 
 def validate_args(args):
@@ -45,7 +47,7 @@ def validate_season(args):
 
 
 def get_stats_by_type(table_type: VdcaBase):
-    args = parser.parse_args()
+    args = stats_arg_parser.parse_args()
     args = validate_args(args)
 
     results = db.query_stats_by_season_finals_grade(table_type,
@@ -54,6 +56,7 @@ def get_stats_by_type(table_type: VdcaBase):
                                                     grade_id=args["grade_id"])
     # TODO: figure out how to properly serialize this response - this way is a hack
     results = models_to_json(results)
+    logger.debug("Returned {} records".format(len(results)))
     return results
 
 
