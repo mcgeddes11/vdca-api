@@ -1,0 +1,1 @@
+docker run -d --name vdca_api_container -p 80:80 vdca_api
