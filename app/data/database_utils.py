@@ -2,6 +2,19 @@ from sqlalchemy.orm import session, sessionmaker
 from contextlib import contextmanager
 from app.data.models import VdcaBase
 
+def models_to_json(model_list: list):
+    # TODO: this is a monstrosity.  The sooner we can not do this, the better.
+    output = []
+    for m in model_list:
+        row = {}
+
+        for field in m.__table__.c:
+            output_key = str(field).replace(m.__tablename__ + ".", "")
+            row[output_key] = getattr(m, output_key, None)
+
+        output.append(row)
+    return output
+
 class VdcaDatabase():
 
     def __init__(self, engine=None):

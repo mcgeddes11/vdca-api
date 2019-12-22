@@ -1,6 +1,7 @@
 import logging
 from app.config import LOG_LEVEL
 
+
 def get_logger(app_name, logfile_path):
     logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s",
                         level=logging.DEBUG,
@@ -18,3 +19,5 @@ def get_logger(app_name, logfile_path):
     logger.addHandler(file_handler)
 
     return logger
+
+

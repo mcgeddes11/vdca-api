@@ -1,8 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from pandas import DataFrame
-import re
-from flask_restful import fields
 
 VdcaBase = declarative_base()
 

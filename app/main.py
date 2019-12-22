@@ -3,7 +3,8 @@ from flask import Flask, jsonify
 from flask_restful import Resource, Api, abort, reqparse
 from datetime import datetime
 from app.data.database_utils import VdcaDatabase
-from app.data.models import FieldingStats, BowlingStats, BattingStats
+from app.data.database_utils import models_to_json
+from app.data.models import FieldingStats, BowlingStats, BattingStats, VdcaBase
 from sqlalchemy.engine import create_engine
 import json
 
@@ -43,21 +44,43 @@ def validate_season(args):
     return args["season"]
 
 
+def get_stats_by_type(table_type: VdcaBase):
+    args = parser.parse_args()
+    args = validate_args(args)
+
+    results = db.query_stats_by_season_finals_grade(table_type,
+                                                    season=args["season"],
+                                                    finals_flag=args["finals_flag"],
+                                                    grade_id=args["grade_id"])
+    # TODO: figure out how to properly serialize this response - this way is a hack
+    results = models_to_json(results)
+    return results
+
+
 class GetFieldingStats(Resource):
 
     def get(self):
-        args = parser.parse_args()
-        args = validate_args(args)
+        results = get_stats_by_type(FieldingStats)
+        return results
 
-        results = db.query_stats_by_season_finals_grade(FieldingStats,
-                                                        season=args["season"],
-                                                        finals_flag=args["finals_flag"],
-                                                        grade_id=args["grade_id"])
-        # TODO: figure out how to properly serialize this response
-        return jsonify(results)
+
+class GetBowlingStats(Resource):
+
+    def get(self):
+        results = get_stats_by_type(BowlingStats)
+        return results
+
+
+class GetBattingStats(Resource):
+
+    def get(self):
+        results = get_stats_by_type(BattingStats)
+        return results
 
 
 api.add_resource(GetFieldingStats, '/fieldingStats')
+api.add_resource(GetBattingStats, '/battingStats')
+api.add_resource(GetBowlingStats, '/bowlingStats')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)

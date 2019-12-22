@@ -84,3 +84,4 @@ def get_teams(url, club_id):
     for t in team_list:
         team_dict[t["TeamID"]] = t["Name"]
     return team_dict
+
