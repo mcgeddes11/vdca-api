@@ -1,5 +1,5 @@
 import logging
-from app.config import LOG_LEVEL
+from config import LOG_LEVEL
 
 
 def get_logger(app_name, logfile_path):

@@ -1,13 +1,13 @@
 """ This code runs the daily update to sync our database with Cricketstatz"""
 
-from app.data.models import BattingStats, VdcaBase, BowlingStats, FieldingStats
-from app.data.database_utils import VdcaDatabase
-from app.config import DATABASE_URL, CRICKETSTATZ_CLUB_ID, CRICKETSTATZ_API_URL, BATTING_STATS_REPORT_MODE, \
+from data.models import BattingStats, VdcaBase, BowlingStats, FieldingStats
+from data.database_utils import VdcaDatabase
+from config import DATABASE_URL, CRICKETSTATZ_CLUB_ID, CRICKETSTATZ_API_URL, BATTING_STATS_REPORT_MODE, \
     BOWLING_STATS_REPORT_MODE, CATCHING_STATS_REPORT_MODE, RUNOUT_STATS_REPORT_MODE, UPDATE_JOB_LOGFILE_PATH
 from sqlalchemy.engine import create_engine
-from app.data.data_utils import get_html_from_response, get_table_from_html, get_playerid_from_url, \
+from data.data_utils import get_html_from_response, get_table_from_html, get_playerid_from_url, \
     get_team_season_grade_combinations, get_teams
-from app.data.utils import get_logger
+from data.utils import get_logger
 from datetime import datetime
 import requests
 

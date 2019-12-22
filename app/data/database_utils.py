@@ -1,6 +1,6 @@
 from sqlalchemy.orm import session, sessionmaker
 from contextlib import contextmanager
-from app.data.models import VdcaBase
+from data.models import VdcaBase
 
 def models_to_json(model_list: list):
     # TODO: this is a monstrosity.  The sooner we can not do this, the better.

@@ -1,15 +1,15 @@
-from app.config import VALID_API_KEY
+from config import VALID_API_KEY
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, abort, reqparse
 from datetime import datetime
-from app.data.database_utils import VdcaDatabase
-from app.data.database_utils import models_to_json
-from app.data.models import FieldingStats, BowlingStats, BattingStats, VdcaBase
+from data.database_utils import VdcaDatabase
+from data.database_utils import models_to_json
+from data.models import FieldingStats, BowlingStats, BattingStats, VdcaBase
 from sqlalchemy.engine import create_engine
-from app.data.utils import get_logger
+from data.utils import get_logger
 import json
 
-from app.config import API_LOGFILE_PATH, DATABASE_URL
+from config import API_LOGFILE_PATH, DATABASE_URL
 
 app = Flask(__name__)
 api = Api(app)
@@ -80,10 +80,15 @@ class GetBattingStats(Resource):
         results = get_stats_by_type(BattingStats)
         return results
 
+class HelloWorld(Resource):
+
+    def get(self):
+        return {"hello": "world"}
 
 api.add_resource(GetFieldingStats, '/fieldingStats')
 api.add_resource(GetBattingStats, '/battingStats')
 api.add_resource(GetBowlingStats, '/bowlingStats')
+api.add_resource(HelloWorld, "/")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)
