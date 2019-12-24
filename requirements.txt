@@ -5,5 +5,4 @@ requests
 lxml
 pandas
 beautifulsoup4
-marshmallow-sqlalchemy
-marshmallow
+PyYAML

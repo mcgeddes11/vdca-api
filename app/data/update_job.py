@@ -10,6 +10,8 @@ from data.data_utils import get_html_from_response, get_table_from_html, get_pla
 from data.utils import get_logger
 from datetime import datetime
 import requests
+import os
+import yaml
 
 logger = get_logger("vdca-update-job-log", UPDATE_JOB_LOGFILE_PATH)
 
@@ -18,20 +20,27 @@ db = VdcaDatabase(engine)
 
 this_season = datetime.utcnow().year
 
-# FOR TESTING ONLY!
-DROP_AND__RECREATE = True
+# Read in config file for this run
+config_file_path = os.getenv("UPDATE_JOB_CONFIG_PATH")
+with open(config_file_path, "r") as f:
+    config_dict = yaml.load(f)
 
 #  drop and recreate if necessary
-if DROP_AND__RECREATE:
+if config_dict["drop_and_recreate"]:
     logger.info("Dropping and recreating tables")
-    years_to_process = range(2007, this_season+1)
     VdcaBase.metadata.drop_all(engine)
     VdcaBase.metadata.create_all(engine)
-# Find current season, drop only those records
-else:
-    # Set to only process current season - changes will be processed as updates
-    years_to_process = [this_season]
 
+# Define years to process based on config
+if config_dict["update_mode_season_logic"] == "all":
+    years_to_process = range(2007, this_season+1)
+elif config_dict["update_mode_season_logic"] == "latest":
+    years_to_process = [this_season]
+else:
+    raise Exception("Unknown update_mode_season_logic flag in config: {}".format(config_dict["update_mode_season_logic"]))
+
+
+logger.info("Running with config: {}".format(config_dict))
 
 # Get a dict of teams
 team_dict = get_teams(CRICKETSTATZ_API_URL, CRICKETSTATZ_CLUB_ID)

@@ -1,0 +1,2 @@
+drop_and_recreate: False
+update_mode_season_logic: "latest" # one of "latest" or "all"
